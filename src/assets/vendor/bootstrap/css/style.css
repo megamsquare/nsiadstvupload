@@ -1,0 +1,35 @@
+.btn-widget,
+.btn-widget:active {
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 17px;
+  padding: 4px 30px 5px 40px;
+  height: 34px;
+  /* Set the path of your logo */
+  background-image: url('https://www.filestack.com/favicon.ico');
+  background-size: 16px 16px;
+  background-position: 16px 8px;
+  background-repeat: no-repeat;
+  line-height: 23px;
+}
+
+
+.btn-widget::after {
+  position: relative;
+  content: "\21a9";
+  color: rgb(239, 74, 37);
+  top: -0px;
+  right: -11px;
+  width: 1px;
+  height: 12px;
+  background: 0 0 no-repeat;
+}
+
+html {
+  background-color: #090821 !important;
+}
+
+.container {
+  background: transparent !important;
+}

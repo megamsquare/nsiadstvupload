@@ -23,9 +23,15 @@
               "src/assets"
             ],
             "styles": [
+
+              "src/assets/css/main.css",
+              "src/assets/css/util.css",
               "src/styles.css"
+
             ],
-            "scripts": [],
+            "scripts": [
+              "src/assets/js/main.js"
+            ],
             "es5BrowserSupport": true
           },
           "configurations": {

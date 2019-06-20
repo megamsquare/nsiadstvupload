@@ -1,0 +1,33 @@
+<body >
+<div class="container mt-5">
+  <h2 class="text-white text-center mb-3">Upload Dstv Promo Code</h2>
+  <form class="mb-3 ">
+      <div class="form-group col-sm-6">
+          <input type="file" (change) = onFileSelected($event) class="btn btn-outline-success form-control-file" id="exampleFormControlFile1">
+      </div>
+      <div class="form-group col-sm-6">
+        <button class="btn btn-outline-success" type="button" (click)="onUpload()">Upload</button> &nbsp; <span style="color:white">{{progress}}</span>
+      </div>
+  </form>
+  <table class="table table-striped mt-3 text-white">
+      <thead>
+          <tr>
+              <!-- <th scope="col">#</th> -->
+              <th scope="col">Promo Name</th>
+              <th scope="col">Promo Code</th>
+              <!-- <th scope="col">Handle</th> -->
+          </tr>
+      </thead>
+      <tbody >
+        <tr *ngFor="let cont of content">
+              <!-- <th scope="row">1</th> -->
+              <td>{{cont.promoName}}</td>
+              <td>{{cont.code}}</td>
+              <!-- <td>@mdo</td> -->
+          </tr>
+
+      </tbody>
+  </table>
+  <a (click)="logout()">Logout</a>
+</div>
+
