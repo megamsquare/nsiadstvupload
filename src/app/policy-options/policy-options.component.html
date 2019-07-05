@@ -1,0 +1,502 @@
+<div class="bg-nsia">
+
+  <nav class=" nav navbar navbar-expand-lg bg-dark bg-light">
+    <a class="navbar-brand" href="#"><img class="img" src="assets/images/nsia_logo.png" alt="NSIA logo"></a>
+    <a class="navbar-brand" href="#"><img class="img" src="assets/images/dstv-logo.png" alt="DSTV logo"></a>
+
+    <!--  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>-->
+    <!--  </button>-->
+  </nav>
+  <div *ngIf="!calculatePremium">
+    <form class="mt-3" [formGroup]="premiumDetailsForm"
+      (ngSubmit)=" submitUserPremiumDetails(premiumDetailsForm.value) " autocomplete="off">
+      <div class="container mt-3 card" *ngIf="!hidePolicySelect">
+        <div class="card-body text-center">
+          <div class="form-group">
+            <label for="inputState" class="text-bold">Products</label>
+            <select id="policy" name="policy" formControlName="policy" class="form-control">
+              <option value='' selected disabled>Choose product</option>
+              <option *ngFor=" let policy of policies" value={{policy.id}}>{{policy.name}}</option>
+            </select>
+          </div>
+
+          <button class="btn btn-outline-success" [disabled]="!premiumDetailsForm.controls['policy'].valid"
+            (click)="personSelected()" (click)="gotoSumInsured(premiumDetailsForm.value)">Next</button>
+          <!-- </form> -->
+        </div>
+      </div>
+
+      <!-- <hr class="mt-2"> -->
+
+      <div class="container mt-3 card " *ngIf="hidePolicySelect">
+        <div class="card-body text-center">
+          <!-- <form class="mt-3"> -->
+
+          <div class="container mt-3 card" *ngIf="hidePolicySelect && !showHome && !showPersonal">
+            <div class="card-body text-center">
+              <div class="form-group">
+                <label for="home" class="text-bold">Housing Type</label>
+                <select id="policy" name="home" formControlName="home" class="form-control" (change)=homeSelected()>
+                  <option value='' selected disabled>Choose Housing Type</option>
+                  <option *ngFor=" let homeOption of homeOptions" value={{homeOption.id}}>{{homeOption.name}}</option>
+                </select>
+              </div>
+
+              <!-- <button *ngIf="premiumDetailsForm.controls['home'].value =='1' && !inBuilding" class="btn btn-outline-success" [disabled]="!premiumDetailsForm.controls['home'].valid"
+                    (click)="gotoSumInsured(premiumDetailsForm.value)">Next</button> -->
+              <!-- </form> -->
+            </div>
+          </div>
+
+          <div *ngIf="(policy == '3') && !(inAssetLocation) && showHome ">
+            <div class="form-row text-center">
+              <div class="form-group col-md-6">
+                <label for="assetDescriptionName" class="text-bold">Asset Name</label>
+                <input type="text" class="form-control" id="assetDescriptionName" name="assetDescriptionName"
+                  formControlName="assetDescriptionName" placeholder="Description of the Asset">
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="assetDeclaredPrice" class="text-bold">Price</label>
+                <input type="number" class="form-control" id="assetDeclaredPrice" name="assetDeclaredPrice"
+                  formControlName="assetDeclaredPrice" placeholder="price of asset">
+              </div>
+              <!-- <div class="form-group col-md-4"> -->
+              <!-- <label for="assetDescription" class="text-bold">Add</label> -->
+
+              <!-- </div> -->
+            </div>
+
+            <div class="text-center">
+              <button class="btn btn-success" (click)=addToAssetTable(premiumDetailsForm.value)>Add</button><br />
+              <b>Note:</b> (Laptop(s) and Mobile phones are not convered under this policy)
+            </div>
+
+            <div class="form-row text-center" *ngIf="show">
+              <table class="container table table-striped mt-3">
+                <thead>
+                  <tr>
+                    <!-- <th scope="col">#</th> -->
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <!-- <th scope="col">Handle</th> -->
+                    <th scope="col">Edit</th>
+                    <th scope="col">Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let asset of assets; let i = index">
+                    <!-- <th scope="row">#</th> -->
+                    <td>{{asset.assetName}}</td>
+                    <td>{{asset.assetPrice}}</td>
+                    <!-- <td>@mdo</td> -->
+                    <td><button class="btn btn-primary" (click)="editAsset(i)">Edit</button></td>
+                    <td><button class="btn btn-danger" (click)="deleteAsset(i)">Delete</button></td>
+                  </tr>
+
+                </tbody>
+              </table>
+              <hr>
+
+            </div>
+
+          </div>
+          <div *ngIf="policy == '3' && sumInsured != null && !inAssetLocation ">
+            <div class="form-row text-center">
+              <label class="text-bold"> Property Value : NGN{{sumInsured}}</label><br />
+            </div>
+            <button class="btn btn-outline-success" [disabled]="!premiumDetailsForm.controls['sumInsured'].valid"
+              (click)="gotoAssetLocation(premiumDetailsForm.value) ">Next</button>
+          </div>
+          <div class="form-row text-center"
+            *ngIf="(policy == '1' || policy == '2' || premiumDetailsForm.controls['home'].value =='1') && !hideSum && !(inDescription) ">
+            <div class="form-group col-md-12 text-center">
+              <label for="sumInsured" class="text-bold">Property Value</label>
+              <input type="number" class="form-control" name="sumInsured" formControlName="sumInsured" id="sumInsured"
+                (keyup)="checkMimimumAmount(premiumDetailsForm.controls['sumInsured'].value)" placeholder="Sum Insured">
+
+            </div>
+            <div class="invalid-feedback" style="display: block" *ngIf="!verifyMinimumSumInsured"><b>Minimum of #1
+                million</b></div>
+            <button class="btn btn-outline-success"
+              [disabled]="(!premiumDetailsForm.controls['sumInsured'].valid) || !verifyMinimumSumInsured"
+              (click)="gotoAssetLocation(premiumDetailsForm.value)" (click) = "changeButtonLabel()">
+              Next
+            </button>
+
+          </div>
+
+          <!-- <hr class="mt-2"> -->
+          <!--</div> -->
+          <div class="form-row" *ngIf="policy == '4' && !(inAssetLocation) ">
+
+            <div class="container mt-3 card" *ngIf="hidePolicySelect && !showPersonal">
+              <div class="card-body text-center">
+                <div class="form-group">
+                  <label for="home" class="text-bold">Personal Accident Insurance Tier</label>
+                  <select id="personal" name="personal" formControlName="personal" class="form-control"
+                    (change)=personSelected()>
+                    <option value='' selected disabled>Choose Tier</option>
+                    <option *ngFor=" let personalOption of personalOptions" value={{personalOption.id}}>
+                      {{personalOption.name}}</option>
+                  </select>
+                </div>
+
+              </div>
+            </div>
+            <!--decribe-->
+            <!-- <div class="form-group col-md-12" showPersonal>
+            <label for="sumInsured" class="text-bold">Annual Emolument</label>
+            <input type="number" class="form-control" name="sumInsured" formControlName="sumInsured" id="sumInsured"
+              placeholder="Annual Emolument">
+          </div> -->
+            <div class="form-row text-center col-md-12">
+              <table class="container table table-striped mt-3">
+                <thead>
+                  <tr>
+                    <th scope="col">Tier</th>
+                    <th scope="col">Subscriber Annual Payment(Premium)</th>
+                    <th scope="col">Benefits(Medical Expense)</th>
+                    <th scope="col">Benefits (Death/Permanent Disability)
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Bronze </td>
+                    <td>#1,000.00</td>
+                    <td>#25,000.00 </td>
+                    <td> #250,000.00</td>
+                  </tr>
+                  <tr>
+                    <td>Silver </td>
+                    <td>#2,000.00 </td>
+                    <td>#50,000.00 </td>
+                    <td>#500,000.00 </td>
+                  </tr>
+                  <tr>
+                    <td> Gold</td>
+                    <td>#4,000.00 </td>
+                    <td>#100,000.00 </td>
+                    <td>#1,000,000.00 </td>
+                  </tr>
+
+                </tbody>
+              </table>
+              <hr>
+
+            </div>
+
+            <button class="btn btn-outline-success"
+              [disabled]="!premiumDetailsForm.controls['sumInsured'].valid || !premiumDetailsForm.controls['personal'].valid"
+              (click)="gotoAssetLocation(premiumDetailsForm.value)" (click) = "changeButtonLabel()">Next</button>
+          </div>
+          <div class="form-row"
+            *ngIf="!houseLocation && sumInsured != null && inAssetLocation && !calculatePremium && (inDescription) ">
+            <div class="form-group col-md-12">
+              <label for="assetLocation" class="text-bold">Present Address</label>
+              <textarea type="text" class="form-control" name="assetLocation" formControlName="assetLocation"
+                id="assetLocation" placeholder="Where are you presently located"></textarea>
+            </div>
+
+            <button class="btn btn-outline-success" [disabled]="!premiumDetailsForm.controls['assetLocation'].valid"
+              (click)="gotoCalculateHousePremium(premiumDetailsForm.value) ">{{nextOrCalculatePremium}}</button>
+          </div>
+
+          <div class="form-row"
+            *ngIf="houseLocation && sumInsured != null && inAssetLocation && !calculatePremium && (inDescription) ">
+            <div class="form-group col-md-12">
+              <label for="assetLocation" class="text-bold">Location of Asset</label>
+              <textarea type="text" class="form-control" name="assetLocation" formControlName="assetLocation"
+                id="assetLocation" placeholder="Where the asset is located"></textarea>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="buildingExteriorView" class="text-bold">Building Exterior View</label>
+
+              <input type="file" (change)="selected1($event)" required name="buildingExteriorView"
+                formControlName="buildingExteriorView" class="btn btn-outline-success form-control-file"
+                id="buildingExteriorView">
+
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="buildingInteriorView1" class="text-bold">Building Interior View 1</label>
+
+              <input type="file" (change)="selected1($event)" required name="buildingInteriorView1"
+                formControlName="buildingInteriorView1" class="btn btn-outline-success form-control-file"
+                id="buildingInteriorView1">
+
+            </div>
+            <div class="form-group col-md-4">
+              <label for="buildingInteriorView2" class="text-bold">Building Interior View 2</label>
+
+              <input type="file" (change)="selected1($event)" required name="buildingInteriorView2"
+                formControlName="buildingInteriorView2" class="btn btn-outline-success form-control-file"
+                id="buildingInteriorView2">
+
+            </div>
+
+            <button class="btn btn-outline-success" [disabled]="!premiumDetailsForm.controls['buildingExteriorView'].valid ||
+          !premiumDetailsForm.controls['buildingInteriorView1'].valid ||
+          !premiumDetailsForm.controls['buildingInteriorView2'].valid ||
+          !premiumDetailsForm.controls['assetLocation'].valid
+          " (click)="gotoCalculateHousePremium(premiumDetailsForm.value) ">Calculate Premium</button>
+          </div>
+
+          <!-- <button class="btn btn-outline-success" [disabled]="!premiumDetailsForm.controls['assetLocation'].valid"
+            (click)="gotoCalculateHousePremium(premiumDetailsForm.value) ">Next</button>
+        </div> -->
+
+          <!-- <div class="form-row" *ngIf="policy =='4' && assetLocation != null ">
+          <div class="form-group col-md-12">
+            <label for="assetDescription" class="text-bold">Description Of the Asset</label>
+            <textarea type="text" class="form-control" id="assetDescription" name="assetDescription" formControlName="assetDescription"
+              placeholder="Description of the Asset"></textarea>
+          </div>
+          <button class="btn btn-outline-success" [disabled]="!premiumDetailsForm.controls['assetDescription'].valid"
+            (click)="gotoCalculateHousePremium(premiumDetailsForm.value) ">Next</button>
+        </div> -->
+          <div *ngIf="sumInsured != null && (policy == '1' || policy == '2') && !inDescription ">
+            <div class="form-row mb-2">
+
+              <!-- <div class="form-row" *ngIf="policy =='4' && assetLocation != null && inDescription == true"> -->
+              <!--Remove description-->
+              <!--Remove description-->
+              <!--Remove description-->
+              <!-- <button class="btn btn-outline-success" [disabled]="!premiumDetailsForm.controls['assetDescription'].valid"
+                    (click)="gotoCalculateHousePremium(premiumDetailsForm.value) ">Next</button> -->
+              <!-- </div> -->
+
+              <div class="form-group col-md-4">
+                <label for="vehicleMake" class="text-bold">Vehicle Make</label>
+                <select id="vehicleMake" name="vehicleMake" formControlName="vehicleMake" class="form-control"
+                  (change)="getVehicleModel(premiumDetailsForm.value.vehicleMake)">
+                  <option value='' selected disabled>Choose Vehicle Make</option>
+                  <option *ngFor=" let make of vehicleMakes" value={{make.id}}>{{make.title}}</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="vehicleModel" class="text-bold">Vehicle Model</label>
+                <select id="vehicleModel" name="vehicleModel" formControlName="vehicleModel" class="form-control">
+                  <option value='' selected disabled>Choose Vehicle Make</option>
+                  <option *ngFor=" let model of vehicleModels" value={{model.id}}>{{model.title}}</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="vehicleDate" class="text-bold">Vehicle Year</label>
+                <select id="vehicleDate" name="vehicleDate" formControlName="vehicleDate" class="form-control">
+                  <option value="" selected disabled>Select year</option>
+                  <option value="1990" title="1990">1990</option>
+                  <option value="1991" title="1991">1991</option>
+                  <option value="1992" title="1992">1992</option>
+                  <option value="1993" title="1993">1993</option>
+                  <option value="1994" title="1994">1994</option>
+                  <option value="1995" title="1995">1995</option>
+                  <option value="1996" title="1996">1996</option>
+                  <option value="1997" title="1997">1997</option>
+                  <option value="1998" title="1998">1998</option>
+                  <option value="1999" title="1999">1999</option>
+                  <option value="2000" title="2000">2000</option>
+                  <option value="2001" title="2001">2001</option>
+                  <option value="2002" title="2002">2002</option>
+                  <option value="2003" title="2003">2003</option>
+                  <option value="2004" title="2004">2004</option>
+                  <option value="2005" title="2005">2005</option>
+                  <option value="2006" title="2006">2006</option>
+                  <option value="2007" title="2007">2007</option>
+                  <option value="2008" title="2008">2008</option>
+                  <option value="2009" title="2009">2009</option>
+                  <option value="2010" title="2010">2010</option>
+                  <option value="2011" title="2011">2011</option>
+                  <option value="2012" title="2012">2012</option>
+                  <option value="2013" title="2013">2013</option>
+                  <option value="2014" title="2014">2014</option>
+                  <option value="2015" title="2015">2015</option>
+                  <option value="2016" title="2016">2016</option>
+                  <option value="2017" title="2017">2017</option>
+                  <option value="2018" title="2018">2018</option>
+                  <option value="2019" title="2019">2019</option>
+                  <option value="2020" title="2020">2020</option>
+                  <option value="2021" title="2021">2021</option>
+                  <option value="2022" title="2022">2022</option>
+                </select>
+              </div>
+
+
+              <div class="form-group col-md-4">
+                <label for="vehicleReg" class="text-bold">Vehicle Registration Number</label>
+                <input type="text" class="form-control" number="vehicleReg" formControlName="vehicleReg" id="vehicleReg"
+                  placeholder="Vehicle registraion number">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="vehicleChasis" class="text-bold">Vehicle Chasis Number</label>
+                <input type="text" class="form-control" id="vehicleChasis" name="vehicleChasis"
+                  formControlName="vehicleChasis" placeholder="Vehicle chasis number">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="vehicleEngine" class="text-bold">Engine number </label>
+                <input type="text" class="form-control" id="vehicleEngine" name="vehicleEngine"
+                  formControlName="vehicleEngine" placeholder="Vehicle engine number">
+              </div>
+            </div>
+
+            <hr>
+
+            <h3 class="text-bold mt-2 mb-2">Motor Vehicle Pre-loss Inspection Pictures</h3>
+            <div class="form-row mb-2">
+              <div class="form-group col-md-6">
+                <label for="exteriorFrontView" class="text-bold">Exterior Front View</label>
+
+                <input type="file" (change)="selected1($event)" required name="exteriorFrontView"
+                  formControlName="exteriorFrontView" class="btn btn-outline-success form-control-file"
+                  id="exteriorFrontView">
+
+              </div>
+              <div class="form-group col-md-6">
+                <label for="exteriorLeftHandSideView" class="text-bold"> Exterior Left Hand Side View</label>
+
+                <input type="file" (change)="selected1($event)" required name="exteriorLeftHandSideView"
+                  formControlName="exteriorLeftHandSideView" class="btn btn-outline-success form-control-file"
+                  id="exteriorLeftHandSideView">
+
+              </div>
+            </div>
+            <div class="form-row mb-2">
+              <div class="form-group col-md-6">
+                <label for="exteriorRightHandSideFrontView" class="text-bold">Exterior Right Hand Side Front
+                  View</label>
+
+                <input type="file" (change)="selected1($event)" required name="exteriorRightHandSideFrontView"
+                  formControlName="exteriorRightHandSideFrontView" class="btn btn-outline-success form-control-file"
+                  id="exteriorRightHandSideFrontView">
+
+              </div>
+              <div class="form-group col-md-6">
+                <label for="exteriorRightHandSideRearView" class="text-bold">Exterior Right Hand Side Rear View </label>
+
+                <input type="file" (change)="selected1($event)" required name="exteriorRightHandSideRearView"
+                  formControlName="exteriorRightHandSideRearView" class="btn btn-outline-success form-control-file"
+                  id="exteriorRightHandSideRearView">
+
+              </div>
+            </div>
+
+            <div class="form-row mb-2">
+              <div class="form-group col-md-6">
+                <label for="interiorView" class="text-bold">Interior</label>
+
+                <input type="file" (change)="selected1($event)" required name="interiorView"
+                  formControlName="interiorView" class="btn btn-outline-success form-control-file" id="interiorView">
+
+              </div>
+              <div class="form-group col-md-6">
+                <label for="dashboard" class="text-bold">Dashboard</label>
+
+                <input type="file" (change)="selected1($event)" required name="dashboard" formControlName="dashboard"
+                  class="btn btn-outline-success form-control-file" id="dashboard">
+
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="plateChasisNumber" class="text-bold">Chasis number on the VIN plate</label>
+
+                <input type="file" (change)="selected1($event)" required name="plateChasisNumber"
+                  formControlName="plateChasisNumber" class="btn btn-outline-success form-control-file"
+                  id="plateChasisNumber">
+
+              </div>
+            </div>
+            <button class="btn btn-outline-success" [disabled]="!premiumDetailsForm.controls['assetLocation'].valid ||
+
+          !premiumDetailsForm.controls['vehicleReg'].valid ||
+          !premiumDetailsForm.controls['vehicleChasis'].valid ||
+          !premiumDetailsForm.controls['vehicleEngine'].valid ||
+          !premiumDetailsForm.controls['exteriorFrontView'].valid ||
+          !premiumDetailsForm.controls['exteriorLeftHandSideView'].valid ||
+          !premiumDetailsForm.controls['exteriorRightHandSideFrontView'].valid ||
+          !premiumDetailsForm.controls['exteriorRightHandSideRearView'].valid ||
+          !premiumDetailsForm.controls['interiorView'].valid ||
+          !premiumDetailsForm.controls['dashboard'].valid ||
+          !premiumDetailsForm.controls['plateChasisNumber'].valid
+          " (click)="CalculatePremiumDetails() ">Calculate Premium</button>
+          </div>
+          <!--  <div class="form-group">
+                              <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="gridCheck">
+                                <label class="form-check-label" for="gridCheck">
+                                  Check me out
+                                </label>
+                              </div>
+                            </div> -->
+          <!-- <button *ngIf="finalSubmission " type="submit" class="btn btn-outline-success mb-2">Next</button> -->
+
+        </div>
+      </div>
+    </form>
+    <!-- <hr class="mt-2"> -->
+  </div>
+
+  <div class="container mt-3 card" *ngIf="calculatePremium">
+    <form ngNoForm method="post" action="https://sandbox.interswitchng.com/webpay/pay">
+      <div class="card-body text-center">
+        <div class="alert alert-success" role="alert">
+          <i class="fas fa-info-circle fa-7x"></i>
+          <h3>Well done {{OutputData.cust_name}},</h3><br />
+          <h4 class="alert-heading">
+            Your Insurance Premium for {{OutputData.BusinessClass}} is {{this.OutputData.premiumstring |currency:'NGN'}}
+          </h4>
+          <ul>
+            <li>Gross Premium : {{OutputData.originalPremium |currency:'NGN'}}</li>
+            <li>10% Discount : {{percentDiscount |currency:'NGN'}} </li>
+            <li>Net Premium : {{OutputData.premiumstring |currency:'NGN'}}</li>
+          </ul>
+          <h4> </h4>
+          <h4></h4>
+
+          <h6>Transaction Reference - <b>{{OutputData.txn_ref}}</b></h6>
+          <!-- <p></p> -->
+          <hr>
+          <input name="product_id" type="hidden" id="product_id" [(ngModel)]="OutputData.product_id" />
+          <input name="cust_id" type="hidden" id="cust_id" [(ngModel)]="OutputData.cust_id" />
+          <input name="cust_name" type="hidden" id="cust_name" [(ngModel)]="OutputData.cust_name" />
+          <input name="pay_item_id" type="hidden" id="pay_item_id" [(ngModel)]="OutputData.pay_item_id" />
+          <input name="amount" type="hidden" id="amount" [(ngModel)]="OutputData.amount" />
+          <input name="currency" type="hidden" id="currency" [(ngModel)]="OutputData.currency" />
+          <input name="site_redirect_url" type="hidden" id="site_redirect_url"
+            [(ngModel)]="OutputData.site_redirect_url" />
+          <input name="txn_ref" type="hidden" id="txn_ref" [(ngModel)]="OutputData.txn_ref" />
+          <input name="hash" type="hidden" id="hash" [(ngModel)]="OutputData.hash" />
+
+
+          <button onclick="submit()" type="submit" class="btn btn-danger text-uppercase text-bold">PAY VIA
+            QUICKTELLER</button>
+          <!--  <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p> -->
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- <hr class="mt-2"> -->
+  <div class="container mt-3 mb-2 card" *ngIf="calculatePremiumFail">
+    <div class="card-body text-center">
+      <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-circle fa-7x"></i>
+        <h4 class="alert-heading">Sorry! <br> There was an error processing your request!</h4>
+        <!-- <p></p> -->
+        <hr>
+        <button type="button" (click)=gotoPolicies() class="btn btn-danger text-uppercase text-bold">Click to try
+          again</button>
+        <!--  <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p> -->
+      </div>
+    </div>
+  </div>
+
+  <!-- <hr>
+  <div class="text-center mb-3">
+
+    <input type='file' style="padding:10px;
+                                background:#858173;" onchange="readURL(this);" />
+    <img id="blah" src="http://placehold.it/180" alt="your image" style=" max-width:180px;" />
+  </div> -->

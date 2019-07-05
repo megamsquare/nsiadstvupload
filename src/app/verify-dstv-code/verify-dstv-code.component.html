@@ -1,0 +1,70 @@
+<body class="bg-nsia">
+
+  <nav class=" nav navbar navbar-expand-lg bg-dark bg-light">
+    <a class="navbar-brand" href="#"><img class="img" src="assets/images/nsia_logo.png" alt="NSIA logo"></a>
+    <a class="navbar-brand" href="#"><img class="img" src="assets/images/dstv-logo.png" alt="DSTV logo"></a>
+
+    <!--  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span> -->
+    <!-- </button>  -->
+  </nav>
+
+  <div class="container mt-3 card ">
+    <div class="card-body text-center">
+      <div class="alert alert-golden" role="alert">
+        <i class="fas fa-info-circle fa-7x"></i>
+        <h4 class="alert-heading">Welcome! <br> Please enter your voucher code</h4>
+
+        <form [formGroup]="verifyForm" (ngSubmit)=" verifyCode(verifyForm.value) " autocomplete="off"
+          class="voucher-form">
+          <br /><br />
+          <div class="form-group ">
+            <label for="dstvcode" class="text-bold text-uppercase">Voucher code</label>
+            <input type="text" class="form-control mb-2" id="dstvcode" name="dstvcode" formControlName="dstvcode"
+              placeholder="Enter voucher code">
+              <div class="invalid-feedback" style="display: block" *ngIf="verifyForm.controls['dstvcode'].invalid && verifyForm.controls['dstvcode'].touched">Code
+              is required</div>
+            <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+            <label for="dstvemail" class="text-bold text-uppercase mt-3">Email</label>
+            <input type="text" class="form-control" id="dstvemail" name="dstvemail" formControlName="dstvemail"
+              placeholder="Enter Email">
+               <div class="invalid-feedback" style="display: block" *ngIf="verifyForm.controls['dstvemail'].invalid && verifyForm.controls['dstvemail'].touched">Email
+              is required</div>
+          </div>
+          <div class="invalid-feedback" style="display: block" *ngIf="error">Code / Email entered
+                        is incorrect</div>
+          <!-- <p></p> -->
+          <hr>
+          <button type="submit" class="btn btn-danger text-uppercase text-bold"
+            [disabled]="!verifyForm.valid">Submit</button>
+          <!--  <p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p> -->
+        </form>
+         <div class="invalid-feedback" style="display: block" *ngIf="error">Code / Email entered
+              is incorrect</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="container mt-3 card " *ngIf="error">
+    <div class="card-body text-center">
+      <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-circle fa-7x"></i>
+        <h4 class="alert-heading">Sorry! <br> There was an error processing your request!</h4>
+       
+        <hr>
+        <button type="button" class="btn btn-danger text-uppercase text-bold" (click)="retry()">Click to try
+          again</button>
+       
+      </div>
+    </div>
+  </div> -->
+
+
+
+
+
+
+
+  <!--    <div class="footer  bg-dark text-white">footer</div> -->
+
+</body>
