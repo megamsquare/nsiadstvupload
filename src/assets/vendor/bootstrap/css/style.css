@@ -1,11 +1,3 @@
-.bg.nsia {
-  background-image: linear-gradient(to bottom, rgba(247, 247, 247, 0.82), rgba(247, 247, 247, 0.82));
-  background-position: right top;
-  background-size: cover;
-  background-repeat: repeat;
-  background-attachment: fixed;
-}
-
 .btn-widget,
 .btn-widget:active {
   font-family: "Open Sans", sans-serif;
@@ -35,41 +27,9 @@
 }
 
 html {
-  background-image: linear-gradient(to bottom, rgba(247, 247, 247, 0.82), rgba(247, 247, 247, 0.82)), url("../../../images/nsia-bg.jpg");
-  background-position: right top;
-  background-size: cover;
-  background-repeat: repeat;
-  background-attachment: fixed;
+  background-color: #090821 !important;
 }
 
 .container {
   background: transparent !important;
-}
-
-.form {
-  background: transparent !important;
-}
-
-/* .nav{
-    background: rgba(85, 85, 85, 0.507) !important;
-  } */
-
-.img {
-  width: auto;
-  height: 60px;
-
-
-}
-
-.text-bold {
-  font-weight: bold;
-}
-
-.footer {
-
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  color: white;
-  text-align: center;
 }

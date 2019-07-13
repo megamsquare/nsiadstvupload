@@ -11,6 +11,7 @@
   },
   "private": true,
   "dependencies": {
+<<<<<<< HEAD
     "@angular/animations": "^8.1.1",
     "@angular/common": "~8.1.1",
     "@angular/compiler": "~8.1.1",
@@ -29,6 +30,22 @@
     "ngx-toastr": "^10.0.4",
     "ngx-ui-loader": "^8.0.0",
     "rxjs": "~6.5.2",
+=======
+    "@angular/animations": "^7.2.15",
+    "@angular/common": "~7.2.0",
+    "@angular/compiler": "~7.2.0",
+    "@angular/core": "~7.2.0",
+    "@angular/forms": "~7.2.0",
+    "@angular/platform-browser": "~7.2.0",
+    "@angular/platform-browser-dynamic": "~7.2.0",
+    "@angular/router": "~7.2.0",
+    "@auth0/angular-jwt": "^2.1.0",
+    "angular-jwt": "github:auth0/angular-jwt",
+    "angular2-jwt": "^0.2.3",
+    "core-js": "^2.5.4",
+    "ngx-toastr": "^10.0.4",
+    "rxjs": "~6.3.3",
+>>>>>>> parent of 77a082e... semi finished project
     "rxjs-compat": "^6.5.2",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
